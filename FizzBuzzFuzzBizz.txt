@@ -1,8 +1,11 @@
 3
 Fizz
+
 5
 Buzz
+
 7
 Fuzz
+
 9
 Bizz
