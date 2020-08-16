@@ -6,12 +6,9 @@ var
   ActionNum: array [1..65536] of integer;
   ReactionString: array [1..65536] of string;
   TempFileOutput, TargetFile: textfile;
-  ErrorReport, filename, choiceInput, consoleLog, confirm, tempInput: string;
+  filename, choiceInput, consoleLog, confirm, tempInput: string;
   //fileLength
-  Length, outputNum, writeNum, counter,
-  choice,
-  //choice 0 for main 1 read file, 2 create file, 3 FizzBuzz, 4 exit
-  confirmChoice: integer;
+  Length, outputNum, writeNum, counter, confirmChoice: integer;
   Success, exit, continue, isEmpty, confirmName, corNum: boolean;
 
 procedure ExitConfirm;
