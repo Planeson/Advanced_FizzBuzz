@@ -6,20 +6,22 @@ var
   ActionNum: array [1..65536] of integer;
   ReactionString: array [1..65536] of string;
   TempFileOutput, TargetFile: textfile;
-  ErrorReport, filename, choiceInput, consoleLog, confirm: string;
+  ErrorReport, filename, choiceInput, consoleLog, confirm, tempInput: string;
   //fileLength
   Length, outputNum, writeNum, counter,
   choice,
   //choice 0 for main 1 read file, 2 create file, 3 FizzBuzz, 4 exit
   confirmChoice: integer;
-  Success, exit, continue, isEmpty, confirmName: boolean;
+  Success, exit, continue, isEmpty, confirmName, corNum: boolean;
 
 procedure ExitConfirm;
  begin
    writeln('Are you sure you want to exit this executable? Type [y] to confirm, press Enter to cancel.');
+   writeln;
    readln(choiceInput);
    case (choiceInput) of
      'y', 'Y', 'YES', 'yes', 'Yes', 'confirm', 'Confirm', 'CONFIRM': begin
+            writeln;
             writeln('See you next time and have a nice day! Press Enter to exit.');
             readln;
             exit:=true;
@@ -30,13 +32,19 @@ procedure RunProgram;
  begin
   if counter<>0 then
    begin
+    writeln('*************************************');
+    writeln;
     writeln('Please input the last integer.');
+    writeln;
     readln(Length);
     while Length<=0 do
      begin
       writeln('Please input the last number again, which should be bigger than 0.');
       readln(Length);
      end;
+    writeln;
+    writeln('*************************************');
+    writeln;
     for outputNum:= 1 to Length do
       begin
       consoleLog:='';
@@ -49,43 +57,66 @@ procedure RunProgram;
         if consoleLog='' then consoleLog:=intToStr(outputNum);
         writeln(consoleLog);
       end;
-    exit:=false
+    writeln;
+    writeln('*************************************');
+    writeln;
+    writeln('FizzBuzz finished!');
+    exit:=false;
    end;
  end;
 procedure ReadFile;
  begin
   confirmName:=false;
+  writeln('*************************************');
+  writeln;
   while confirmName=false do
    begin
     writeln('Please input the name of your file. No need to include the ".txt" after the name even if you see it.');
+    writeln;
     readln(filename);
-    writeln('Type [y] to confirm the file name, "', filename, '", else press Enter to retry.');
-    readln(confirm);
-    case (confirm) of
-      'y', 'Y', 'Yes', 'YES': confirmName:=true
+    writeln;
+    filename:=filename+'.txt';
+    if FileExists(filename) then confirmName:=true
+      else begin
+        writeln('This file seems to not exist!');
+        writeln;
+        writeln('Make sure the file is located in the same folder at this executable and you typed the correct name.');
+        writeln;
+        writeln('Please try again.');
+        writeln;
+        confirmName:=false;
+           end;
     end;
-   end;
-  filename:=filename+'.txt';
-  assignfile(TargetFile, filename);
-  try
+   assignfile(TargetFile, filename);
+   try
     reset(TargetFile);
     counter:=1;
     while not eof(TargetFile) do
       begin
-        readln(TargetFile, ActionNum[counter]);
-        readln(TargetFile, ReactionString[counter]);
-        readln;
+        readln(TargetFile, tempInput);
+        if tempInput<>'' then
+         begin
+           corNum:=TryStrToInt(tempInput, ActionNum[counter]);
+           if NOT corNum then writeln('Something went wrong! ', tempInput, ' doesn''t seem like a number!')
+           end;
+        readln(TargetFile, tempInput);
+        if tempInput<>'' then ReactionString[counter]:=tempInput;
         counter:=counter+1;
       end;
     CloseFile(TargetFile);
+    writeln('*************************************');
+    writeln;
     writeln('File reading successful!');
+    writeln;
     write('File length:');
     writeln(counter);
+    writeln;
     success:=true;
     confirmChoice:=0;
     while confirmChoice=0 do
       begin
       writeln('Do you wish to confirm the file content? Please type [yes] if you wish to confirm, and [no] if you would like to skip this confirmation.');
+      writeln;
       readln(confirm);
       case (confirm) of
       'yes', 'y', 'Yes', 'Y', 'YES': confirmChoice:=1;
@@ -94,14 +125,15 @@ procedure ReadFile;
       end;
       if confirmChoice=1 then
       begin
-       writeln('');
-       writeln('********************');
-      for writeNum:= 1 to counter do
+       writeln;
+       writeln('*************************************');
+      for writeNum:= 1 to counter-1 do
         begin
          writeln(ActionNum[writeNum]);
          writeln(ReactionString[writeNum]);
         end;
       writeln('********************');
+      writeln;
       writeln('End of file. Press enter to continue.');
       readln;
       isEmpty:=false;
@@ -126,19 +158,21 @@ procedure MakeFile;
  end;
 procedure Selector;
  begin
+  writeln;
   writeln('**********Advanced FizzBuzz**********');
-  writeln('');
+  writeln;
   writeln('Type [1] to Read a file');
-  writeln('');
+  writeln;
   writeln('Type [2] to create a new file');
-  writeln('');
+  writeln;
   writeln('Type [3] to run FizzBuzz');
-  writeln('');
+  writeln;
   writeln('Type [4] to exit this executable');
-  writeln('');
+  writeln;
   writeln('*************************************');
+  writeln;
   readln(choiceInput);
-  writeln('');
+  writeln;
   case (choiceInput) of
   '1': ReadFile;
   '2': MakeFile;
@@ -148,6 +182,5 @@ procedure Selector;
  end;
 begin
   writeln('Please read the "LICENSE.txt" file before proceeding.');
-  writeln('');
   while exit=false do Selector;
 end.
