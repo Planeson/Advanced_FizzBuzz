@@ -58,7 +58,6 @@ procedure RunProgram;
     writeln('*************************************');
     writeln;
     writeln('FizzBuzz finished!');
-    exit:=false;
    end;
  end;
 procedure ReadFile;
@@ -81,7 +80,6 @@ procedure ReadFile;
         writeln;
         writeln('Please try again.');
         writeln;
-        confirmName:=false;
            end;
     end;
    assignfile(TargetFile, filename);
@@ -142,16 +140,14 @@ procedure ReadFile;
        success:=false;
     end;
   end;
-  exit:=false
  end;
 procedure MakeFile;
  begin
   writeln('Welcome to the FizzBuzz file creator!');
   while continue=false do
    begin
-     readln;
+
    end;
-  exit:=false
  end;
 procedure Selector;
  begin
@@ -179,5 +175,6 @@ procedure Selector;
  end;
 begin
   writeln('Please read the "LICENSE.txt" file before proceeding.');
+  exit:=false;
   while exit=false do Selector;
 end.
