@@ -5,11 +5,10 @@ uses
 var
   ActionNum: array [1..65536] of integer;
   ReactionString: array [1..65536] of string;
-  TempFileOutput, TargetFile: textfile;
-  filename, choiceInput, consoleLog, confirm, tempInput: string;
-  //fileLength
-  Length, outputNum, writeNum, counter, confirmChoice: integer;
-  Success, exit, continue, isEmpty, confirmName, corNum: boolean;
+  TargetFile, OutputFile: textfile;
+  filename, choiceInput, consoleLog, confirm, tempInput, writeString: string;
+  Length, outputNum, writeNum, counter, confirmChoice, tempActionNum, writeCounter: integer;
+  Success, exit, continue, isEmpty, confirmName, corNum, writeLoop, numCheck: boolean;
 
 procedure ExitConfirm;
  begin
@@ -27,7 +26,7 @@ procedure ExitConfirm;
  end;
 procedure RunProgram;
  begin
-  if counter<>0 then
+  if (counter<>0) OR (writeCounter<>0) then
    begin
     writeln('*************************************');
     writeln;
@@ -58,7 +57,8 @@ procedure RunProgram;
     writeln('*************************************');
     writeln;
     writeln('FizzBuzz finished!');
-   end;
+   end
+  else writeln('Please read ormake a file before usig this segment!')
  end;
 procedure ReadFile;
  begin
@@ -104,7 +104,7 @@ procedure ReadFile;
     writeln('File reading successful!');
     writeln;
     write('File length:');
-    writeln(counter);
+    writeln(counter-1);
     writeln;
     success:=true;
     confirmChoice:=0;
@@ -143,12 +143,43 @@ procedure ReadFile;
  end;
 procedure MakeFile;
  begin
+  for writeLoop:=1 to 65535 do
+    begin
+      ActionNum[writeLoop]:=nil;
+      ReactionString[writeLoop]:=nil;
+    end;
   writeln('Welcome to the FizzBuzz file creator!');
-  while continue=false do
-   begin
-
+  writeln('Note that creating a file overrides the file stored in memory. You will need to load it back up if you wish to use it.');
+  writeCounter:=1;
+  writeLoop:=true;
+  while writeLoop=true do
+    begin
+      numCheck:=false;
+      writeln('Type in the number.');
+      while numCheck=false do
+        begin
+          readln(writeString);
+          writeln;
+          if TryStrToInt (writeString, tempActionNum)
+          then if tempActionNum>0 then begin
+                                          ActionNum[writeCounter]:=tempActionNum;
+                                          numCheck:=true;
+                                       end
+               else writeln('Less than or equal to 0! Please type in a number larger than 0!')
+          else writeln('Your input ''', writeString, ''' seems to not be a number! Please type in a number!')
+        end;
+      readln(writeString);
+      ReactionString[writeCounter]:=writeString;
+      writeln('fin');
+      for writeNum:= 1 to counter-1 do
+        begin
+         writeln(ActionNum[writeNum]);
+         writeln(ReactionString[writeNum]);
+        end;
+      writeLoop:=false
+      //testing mode
+    end;
    end;
- end;
 procedure Selector;
  begin
   writeln;
@@ -156,7 +187,7 @@ procedure Selector;
   writeln;
   writeln('Type [1] to Read a file');
   writeln;
-  writeln('Type [2] to create a new file');
+  writeln('Type [2] to create a new or edit an existing file');
   writeln;
   writeln('Type [3] to run FizzBuzz');
   writeln;
@@ -164,15 +195,25 @@ procedure Selector;
   writeln;
   writeln('*************************************');
   writeln;
-  readln(choiceInput);
-  writeln;
-  case (choiceInput) of
-  '1': ReadFile;
-  '2': MakeFile;
-  '3': RunProgram;
-  '4': ExitConfirm;
-  end;
+  continue:=false;
+  while continue=false do
+    begin
+      continue:=true;
+      readln(choiceInput);
+      writeln;
+      case (choiceInput) of
+      '1': ReadFile;
+      '2': MakeFile;
+      '3': RunProgram;
+      '4': ExitConfirm;
+      else
+        begin
+          writeln('Please choose a segment to run!');
+          continue:=false
+        end;
+    end;
  end;
+end;
 begin
   writeln('Please read the "LICENSE.txt" file before proceeding.');
   exit:=false;
