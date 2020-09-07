@@ -2,13 +2,24 @@ program FizzBuzz;
 
 uses
  sysutils;
+
+type
+  TActionNum = array [1..65536] of integer;
+  TReactionString = array [1..65536] of string;
+
 var
-  ActionNum: array [1..65536] of integer;
-  ReactionString: array [1..65536] of string;
+  ActionNum: TActionNum;
+  ReactionString:TReactionString;
   TargetFile, OutputFile: textfile;
   filename, choiceInput, consoleLog, confirm, tempInput, writeString: string;
-  Length, outputNum, writeNum, counter, confirmChoice, tempActionNum, writeCounter: integer;
+  Length, outputNum, writeNum, counter, confirmChoice, tempActionNum: integer;
   Success, exit, continue, isEmpty, confirmName, corNum, writeLoop, numCheck: boolean;
+
+procedure ArrayClear;
+begin
+ ActionNum:=default(TActionNum);
+ ReactionString:=default(TReactionString);
+end;
 
 procedure ExitConfirm;
  begin
@@ -26,13 +37,13 @@ procedure ExitConfirm;
  end;
 procedure RunProgram;
  begin
-  if (counter<>0) OR (writeCounter<>0) then
+  if counter<>0 then
    begin
     writeln('*************************************');
     writeln;
     writeln('Please input the last integer.');
     writeln;
-    readln(Length);
+    readln(length);
     while Length<=0 do
      begin
       writeln('Please input the last number again, which should be bigger than 0.');
@@ -62,6 +73,7 @@ procedure RunProgram;
  end;
 procedure ReadFile;
  begin
+  ArrayClear;
   confirmName:=false;
   writeln('*************************************');
   writeln;
@@ -143,17 +155,14 @@ procedure ReadFile;
  end;
 procedure MakeFile;
  begin
-  for writeLoop:=1 to 65535 do
-    begin
-      ActionNum[writeLoop]:=nil;
-      ReactionString[writeLoop]:=nil;
-    end;
+  ArrayClear;
   writeln('Welcome to the FizzBuzz file creator!');
   writeln('Note that creating a file overrides the file stored in memory. You will need to load it back up if you wish to use it.');
-  writeCounter:=1;
+  Counter:=0;
   writeLoop:=true;
   while writeLoop=true do
     begin
+    Counter:=Counter+1;
       numCheck:=false;
       writeln('Type in the number.');
       while numCheck=false do
@@ -162,22 +171,24 @@ procedure MakeFile;
           writeln;
           if TryStrToInt (writeString, tempActionNum)
           then if tempActionNum>0 then begin
-                                          ActionNum[writeCounter]:=tempActionNum;
+                                          ActionNum[Counter]:=tempActionNum;
                                           numCheck:=true;
                                        end
                else writeln('Less than or equal to 0! Please type in a number larger than 0!')
           else writeln('Your input ''', writeString, ''' seems to not be a number! Please type in a number!')
         end;
+      writeln('Type in the string.');
       readln(writeString);
-      ReactionString[writeCounter]:=writeString;
-      writeln('fin');
-      for writeNum:= 1 to counter-1 do
+      ReactionString[Counter]:=writeString;
+      writeln('Press Enter to continue writing, type anything else to leave.');
+      readln(choiceInput);
+      if choiceInput<>'' then
         begin
-         writeln(ActionNum[writeNum]);
-         writeln(ReactionString[writeNum]);
+          choiceInput:='';
+          writeln('Press Enter to confirm exiting, type anything else to continue writing.');
+          readln(choiceInput);
+          if choiceInput='' then writeLoop:=false;
         end;
-      writeLoop:=false
-      //testing mode
     end;
    end;
 procedure Selector;
