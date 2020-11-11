@@ -170,10 +170,11 @@ procedure MakeFile;
           readln(writeString);
           writeln;
           if TryStrToInt (writeString, tempActionNum)
-          then if tempActionNum>0 then begin
-                                          ActionNum[Counter]:=tempActionNum;
-                                          numCheck:=true;
-                                       end
+          then if tempActionNum>0 then
+                  begin
+                    ActionNum[Counter]:=tempActionNum;
+                    numCheck:=true;
+                  end
                else writeln('Less than or equal to 0! Please type in a number larger than 0!')
           else writeln('Your input ''', writeString, ''' seems to not be a number! Please type in a number!')
         end;
